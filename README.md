@@ -28,3 +28,28 @@ To run the app use
 ```
 python3 ./app.wsgi
 ```
+
+
+# Logging 
+
+### Priority
+  
+  1 - Low Priority
+  2 - Mid Priority
+  3 - Critial Priority
+
+### Logfiles
+   system
+   user
+   misc
+
+## Example usage in app.py
+
+### Low Priority System
+   logger.log("system",text,"1")
+
+### Mid Priority System
+   logger.log("system",text,"2")
+
+### High Priority User
+   logger.log("user",text,"3")
