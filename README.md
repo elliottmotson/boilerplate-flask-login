@@ -35,8 +35,10 @@ python3 ./app.wsgi
 ### Priority
   
   1 - Low Priority
+  
   2 - Mid Priority
-  3 - Critial Priority
+  
+  3 - Critical Priority
 
 ### Logfiles
    system
@@ -46,10 +48,13 @@ python3 ./app.wsgi
 ## Example usage in app.py
 
 ### Low Priority System
+   
    logger.log("system",text,"1")
 
 ### Mid Priority System
+   
    logger.log("system",text,"2")
 
 ### High Priority User
+   
    logger.log("user",text,"3")
