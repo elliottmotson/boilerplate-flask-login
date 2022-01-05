@@ -13,7 +13,7 @@ pip install -r requirements.txt
 cp ./app/.env.example ./app/.env  
 ```
 
-To complete the setup you need to update your copied .env file!
+To complete the setup you need to update your copied .env file.
 
 ```
 db_user=changeme
@@ -24,7 +24,7 @@ db_database=changeme
 secret_key=changeme
 ```
 
-To run the app use
+To run the app use:
 ```
 python3 ./app.wsgi
 ```
