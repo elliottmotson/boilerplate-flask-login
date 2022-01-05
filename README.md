@@ -48,9 +48,11 @@ There are 3 types of log file:
 - user
 - misc
 
+Each log file will be created in the /logs/ folder if they do not exist when the function is called.
+
 ## Example usage in app.py
 
-logger.log expects 3 parameters with every call with usage cases shown below:
+logger.log() expects 3 parameters with every call with usage cases shown below:
 
 ### Low Priority System
    
