@@ -28,9 +28,9 @@ To run the app use
 ```
 python3 ./app.wsgi
 ```
+# Dev README
 
-
-# Logging 
+## Logging (logger.py) 
 
 ### Priority
   
