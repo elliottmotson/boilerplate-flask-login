@@ -55,6 +55,6 @@ python3 ./app.wsgi
    
    logger.log("system",text,"2")
 
-### High Priority User
+### Critical Priority User
    
    logger.log("user",text,"3")
