@@ -30,7 +30,7 @@ python3 ./app.wsgi
 ```
 # Dev README
 
-If you wish to work with, or maintain this repo, the following documentation explains function calls that are specific to this repository.
+If you wish to work with, or maintain this repository, the following documentation explains function calls that are specific to it.
 
 ## Logging (logger.py) 
 
