@@ -13,8 +13,8 @@ import bcrypt
 from flask_mongoengine import MongoEngine
 import pymongo
 from dotenv import load_dotenv
-
-
+import logger
+import time
 
 app = Flask(__name__)
 load_dotenv(verbose=True)
@@ -37,35 +37,38 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
-        return render_template("/login.html")
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if database_validate(username,password):
+            return redirect(url_for('index'))
+    return render_template("/login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        database_newuser(username,password)
-    else:
-        print("FAILED TO CREATE USER ")
-        return render_template("/register.html", message="Try again")
+        if database_newuser(username,password):
+            return redirect(url_for('index'))
     return render_template("/register.html")
 
 @app.route("/<userid>/account", methods=["GET", "POST"])
 def account(userid):
     return render_template("/account.html", userid=userid)
 
+def database_validate(username,password):
+    return True
 
 def database_newuser(username,password):
-        print(username+password)
-        hash = bcrypt.hashpw(password.encode(encoding='UTF-8'), bcrypt.gensalt())
-        userinput = {'username': username, 'password':hash}
-        print(userinput)
-        records.insert_one(userinput)
-        message = ("User " + username + " created.")
-        print(message)
-        user_true = True
-        return render_template("/register.html", username = username, user_true = user_true)
+    hash = bcrypt.hashpw(password.encode(encoding='UTF-8'), bcrypt.gensalt())
+    userinput = {'username': username, 'password':hash}
+    records.insert_one(userinput)
+    text = ("User " + username + " created.")
+    logger.log("system",userinput,"1")
+    logger.log("user",text,"1")
+    user_true = True
+    return True
 
 if __name__ == "__main__":
     app.run(debug=True)
