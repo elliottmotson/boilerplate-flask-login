@@ -30,6 +30,8 @@ python3 ./app.wsgi
 ```
 # Dev README
 
+If you wish to work with, or maintain this project, the following documentation explains function calls that are specific to this repository.
+
 ## Logging (logger.py) 
 
 ### Priority
