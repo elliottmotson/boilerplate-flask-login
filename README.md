@@ -1,5 +1,5 @@
 # flask-login
-A boilerplate account system programmed in Flask and Jinja with MongoDB
+A boilerplate account system programmed in Flask and Jinja with MongoDB integration
 
 
 # SETUP
