@@ -4,7 +4,7 @@ A boilerplate account system programmed in Flask and Jinja with MongoDB integrat
 
 # SETUP
 
-It is reccomended to run this application in a virtual environment to stop dependency clashing.
+It is recommended to run this application in a virtual environment to stop dependency clashing.
 
 ```
 python3 -m venv venv
