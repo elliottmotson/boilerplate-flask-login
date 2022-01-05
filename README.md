@@ -41,9 +41,12 @@ python3 ./app.wsgi
   3 - Critical Priority
 
 ### Logfiles
-   system
-   user
-   misc
+
+There are types of log file:
+
+- system
+- user
+- misc
 
 ## Example usage in app.py
 
