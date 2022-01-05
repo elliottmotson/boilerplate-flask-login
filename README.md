@@ -42,7 +42,7 @@ python3 ./app.wsgi
 
 ### Logfiles
 
-There are types of log file:
+There are 3 types of log file:
 
 - system
 - user
@@ -50,14 +50,16 @@ There are types of log file:
 
 ## Example usage in app.py
 
+logger.log expects 3 parameters with every call with usage cases shown below:
+
 ### Low Priority System
    
-   logger.log("system",text,"1")
+   ```logger.log("system",text,"1")```
 
 ### Mid Priority System
    
-   logger.log("system",text,"2")
+   ```logger.log("system",text,"2")```
 
 ### Critical Priority User
    
-   logger.log("user",text,"3")
+   ```logger.log("user",text,"3")```
