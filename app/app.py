@@ -29,7 +29,7 @@ db_database = os.getenv("db_database")
 
 client = pymongo.MongoClient("mongodb+srv://" + db_user + ":" + db_pwd + "@" + db_host + "/" + db_database + "?retryWrites=true&w=majority")
 db = client.get_database(db_database)
-records = db.register
+records = db.users
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -40,31 +40,32 @@ def login():
 
         return render_template("/login.html")
 
-@app.route("/register", methods=["GET"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == 'POST':
-        data = request.form
-        username = str(data["username"])
-        password = str(data["password"])
+        username = request.form.get('username')
+        password = request.form.get('password')
         database_newuser(username,password)
     else:
         print("FAILED TO CREATE USER ")
         return render_template("/register.html", message="Try again")
-
     return render_template("/register.html")
 
 @app.route("/<userid>/account", methods=["GET", "POST"])
 def account(userid):
     return render_template("/account.html", userid=userid)
 
-@app.route("/register", methods=["POST"])
+
 def database_newuser(username,password):
-            print(username+password)
-            hash = bcrypt.hashpw(password.encode(encoding='UTF-8'), bcrypt.gensalt())
-            userinput = {'username': username, 'password':hash}
-            records.insert_one(userinput)
-            print("User " + username + " created.")
-            return (request.form['login'])
+        print(username+password)
+        hash = bcrypt.hashpw(password.encode(encoding='UTF-8'), bcrypt.gensalt())
+        userinput = {'username': username, 'password':hash}
+        print(userinput)
+        records.insert_one(userinput)
+        message = ("User " + username + " created.")
+        print(message)
+        user_true = True
+        return render_template("/register.html", username = username, user_true = user_true)
 
 if __name__ == "__main__":
     app.run(debug=True)
