@@ -1,3 +1,4 @@
+import os
 from flask import (
     Flask,
     render_template,
@@ -8,17 +9,19 @@ from flask import (
     session,
 )  # noqa: E501
 from flask_mongoengine import MongoEngine
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.secret_key = "changeme"
+load_dotenv(verbose=True)
 
-app.config['MONGODB_SETTINGS'] = {
-    'db': 'database',
-    'host': 'localhost',
-    'port': 27017
-}
-db = MongoEngine()
-db.init_app(app)
+db_user = os.getenv("db_user")
+db_pwd = os.getenv("db_pwd")
+db_host = os.getenv("db_host")
+db_database = os.getenv("db_database")
+
+client = pymongo.MongoClient("mongodb+srv://" + db_user + ":" + db_pwd + "@" + db_host + "/" + db_database + "?retryWrites=true&w=majority")
+db = client.test
 
 class user(db.Document):
     username = db.StringField()
@@ -42,6 +45,10 @@ def login():
 def register():
     username = request.form.get("username")
     password = request.form.get("password")
+    userdata = {
+        "username": username,
+        "password": password,
+    }
     if database_newuser(username,password):
         return render_template("/register.html")
 
