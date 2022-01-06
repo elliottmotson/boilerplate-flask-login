@@ -53,8 +53,9 @@ def login():
             logger.log("user",(username+" logged in"),"1")
             return redirect(url_for('index'))
         else:
-            logger.log("user",("Invalid login to account " + username),"1")
-            return render_template("/login.html")
+            logger.log("user",("Invalid login to account with username " + username),"1")
+            invalid = True
+            return render_template("/login.html",invalid=invalid)
     return render_template("/login.html")
 
 @app.route("/register", methods=["GET", "POST"])
@@ -65,8 +66,8 @@ def register():
         if database_newuser(username,password):
             return redirect(url_for('index'))
         else:
-            invalidlogin = True
-            return render_template("/register.html",invalidlogin=invalidlogin)
+            invalidreg = True
+            return render_template("/register.html",invalidreg=invalidreg)
     return render_template("/register.html")
 
 @app.route('/logout')
@@ -79,18 +80,24 @@ def account(userid):
     return render_template("/account.html", userid=userid)
 
 def database_validate(username,password):
-    user = records.find_one({"username": username})
-    dbhash = user["password"]
-    if bcrypt.checkpw(password.encode('utf8'), dbhash):
-        return True
+    if records.find_one({"username": username}):
+        user = records.find_one({"username": username})
+        dbhash = user["password"]
+        if bcrypt.checkpw(password.encode('utf8'), dbhash):
+            return True
+        else:
+            return False
     else:
         return False
-
 def database_newuser(username,password):
     hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
-    records.insert_one({'username': username, 'password': hash})
-    logger.log("user",("User " + username + " created."),"1")
-    return True
+    if records.find_one({"username": username}):
+        logger.log("user",("Attempted register with taken username: " + username),"1")
+        return False
+    else:
+        records.insert_one({'username': username, 'password': hash})
+        logger.log("user",("User " + username + " created."),"1")
+        return True
 
 if __name__ == "__main__":
     app.run(debug=True)

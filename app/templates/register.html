@@ -19,8 +19,8 @@
         <input name="register" type="submit" value="Submit"><br><br>
       </form>
     </div>
-    {% if invalidlogin == true %}
-        <p>Invalid username or password, please try again</p>
+    {% if invalidreg == true %}
+        <p>Account name taken</p>
     {% endif %}
     <a href="{{ url_for('index') }}">Back</a>
   </body>
