@@ -37,8 +37,10 @@ records = db.users
 def index():
     if 'username' in session:
         sessionuser = session["username"]
-        return render_template("/index.html",sessionuser=sessionuser)
+        loggedin = True
+        return render_template("/index.html",sessionuser=sessionuser,loggedin=loggedin)
     else:
+        loggedin = False
         return render_template("/index.html")
 
 @app.route("/login", methods=["GET", "POST"])
