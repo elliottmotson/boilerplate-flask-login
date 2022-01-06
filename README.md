@@ -52,6 +52,8 @@ There are 3 types of log file:
 
 Each log file will be created in the /logs/ folder if they do not exist when the function is called.
 
+"user" logging currently logs IP of user actions.
+
 ## Example usage in app.py
 
 logger.log() expects 3 parameters with every call with usage cases shown below:
