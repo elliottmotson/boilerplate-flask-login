@@ -45,6 +45,9 @@ def login():
         if database_validate(username,password): #Login form validation
             logger.log("user",(username+" logged in"),"1")
             return redirect(url_for('index'))
+        else:
+            logger.log("user",("Invalid login to account " + username),"1")
+            return render_template("/login.html")
     return render_template("/login.html")
 
 @app.route("/register", methods=["GET", "POST"])
@@ -53,7 +56,6 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_newuser(username,password):
-            print("LOGGED IN")
             return redirect(url_for('index'))
         else:
             invalidlogin = True
@@ -64,27 +66,18 @@ def register():
 def account(userid):
     return render_template("/account.html", userid=userid)
 
-def database_validate(username,password):##############################BROKEN
-
-    #dbhash = user["password"]
-    #userinput = ({"username": username})
-    #user = records.find_one(userinput)
-    #userlist = list(user)
-    #userdata = json.dumps(userlist["password"])
-    #print(userdata[2])
-    return True
-    #if bcrypt.hashpw(password, dbhash) == dbhash:
-    #    return True
-    #else:
-    #    return False
+def database_validate(username,password):
+    user = records.find_one({"username": username})
+    dbhash = user["password"]
+    if bcrypt.checkpw(password.encode('utf8'), dbhash):
+        return True
+    else:
+        return False
 
 def database_newuser(username,password):
-    hash = bcrypt.hashpw(password.encode(encoding='UTF-8'), bcrypt.gensalt())
-    userinput = {'username': username, 'password':hash}
-    records.insert_one(userinput)
-    text = ("User " + username + " created.")
-    logger.log("system",userinput,"1")
-    logger.log("user",text,"1")
+    hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
+    records.insert_one({'username': username, 'password': hash})
+    logger.log("user",("User " + username + " created."),"1")
     return True
 
 if __name__ == "__main__":
