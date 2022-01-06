@@ -43,6 +43,7 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_validate(username,password): #Login form validation
+            logger.log("user",(username+" logged in"),"1")
             return redirect(url_for('index'))
     return render_template("/login.html")
 
@@ -66,11 +67,11 @@ def account(userid):
 def database_validate(username,password):##############################BROKEN
 
     #dbhash = user["password"]
-    userinput = ({"username": username})
-    user = records.find_one(userinput)
-    userlist = list(user)
-    userdata = json.dumps(userlist["password"])
-    print(userdata[2])
+    #userinput = ({"username": username})
+    #user = records.find_one(userinput)
+    #userlist = list(user)
+    #userdata = json.dumps(userlist["password"])
+    #print(userdata[2])
     return True
     #if bcrypt.hashpw(password, dbhash) == dbhash:
     #    return True
