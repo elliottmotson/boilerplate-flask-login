@@ -16,15 +16,15 @@ class bcolors:
 #   user
 #   misc
 
-# Example
+# Example usage in app.py
 # Low Priority System
-#   log("system",text,"1")
+#   logger.log("system",text,"1")
 
 # Mid Priority System
-#   log("system",text,"2")
+#   logger.log("system",text,"2")
 
 # High Priority User
-#   log("user",text,"3")
+#   logger.log("user",text,"3")
 
 def log(logfile,text,priority):
     text = str(text)

@@ -15,6 +15,8 @@ import pymongo
 from dotenv import load_dotenv
 import logger
 import time
+from bson import json_util
+import json
 
 app = Flask(__name__)
 load_dotenv(verbose=True)
@@ -40,8 +42,10 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if database_validate(username,password):
+        if database_validate(username,password): #Login form validation
             return redirect(url_for('index'))
+        else:
+            return render_template("/login.html")
     return render_template("/login.html")
 
 @app.route("/register", methods=["GET", "POST"])
@@ -50,7 +54,11 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_newuser(username,password):
+            print("LOGGED IN")
             return redirect(url_for('index'))
+        else:
+            invalidlogin = True
+            return render_template("/register.html",invalidlogin=invalidlogin)
     return render_template("/register.html")
 
 @app.route("/<userid>/account", methods=["GET", "POST"])
@@ -58,16 +66,26 @@ def account(userid):
     return render_template("/account.html", userid=userid)
 
 def database_validate(username,password):
-    return True
+
+    userinput = ({"username": username})
+    user = records.find_one(userinput)
+    dbhash = user["password"]
+    print(dbhash)
+    if bcrypt.checkpw(password.encode('utf8'), dbhash):
+        print("SUCCESS")
+        return True
+    else:
+        print("FAIL")
+        return False
 
 def database_newuser(username,password):
-    hash = bcrypt.hashpw(password.encode(encoding='UTF-8'), bcrypt.gensalt())
-    userinput = {'username': username, 'password':hash}
+    salt = bcrypt.gensalt()
+    hash = bcrypt.hashpw(password.encode('utf8'), salt)
+    userinput = {'username': username, 'password': hash}
     records.insert_one(userinput)
     text = ("User " + username + " created.")
     logger.log("system",userinput,"1")
     logger.log("user",text,"1")
-    user_true = True
     return True
 
 if __name__ == "__main__":
