@@ -35,7 +35,11 @@ records = db.users
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("/index.html")
+    if 'username' in session:
+        sessionuser = session["username"]
+        return render_template("/index.html",sessionuser=sessionuser)
+    else:
+        return render_template("/index.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -43,6 +47,7 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_validate(username,password): #Login form validation
+            session['username'] = username
             logger.log("user",(username+" logged in"),"1")
             return redirect(url_for('index'))
         else:
@@ -61,6 +66,11 @@ def register():
             invalidlogin = True
             return render_template("/register.html",invalidlogin=invalidlogin)
     return render_template("/register.html")
+
+@app.route('/logout')
+def logout():
+   session.pop('username', None)
+   return redirect(url_for('index'))
 
 @app.route("/<userid>/account", methods=["GET", "POST"])
 def account(userid):
