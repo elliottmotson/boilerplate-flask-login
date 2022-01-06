@@ -36,7 +36,8 @@ def log(logfile,text,priority):
             writetext = (nowtime + " - PRIORITY: " + priority + " - LOG - " + text + "\n")
             file.write(writetext)
             file.close()
-
+            print(writetext)
+            
 def validate(logfile, priority):
     logfiles = ['system', 'user', 'misc']
     prioritynum = ['1', '2', '3']

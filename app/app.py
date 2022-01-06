@@ -43,8 +43,10 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_validate(username,password): #Login form validation
+            logger.log("user",(username+" logged in"),"1")
             return redirect(url_for('index'))
         else:
+            logger.log("user",("Invalid login to account " + username),"1")
             return render_template("/login.html")
     return render_template("/login.html")
 
@@ -54,7 +56,6 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_newuser(username,password):
-            print("LOGGED IN")
             return redirect(url_for('index'))
         else:
             invalidlogin = True
@@ -66,26 +67,17 @@ def account(userid):
     return render_template("/account.html", userid=userid)
 
 def database_validate(username,password):
-
-    userinput = ({"username": username})
-    user = records.find_one(userinput)
+    user = records.find_one({"username": username})
     dbhash = user["password"]
-    print(dbhash)
     if bcrypt.checkpw(password.encode('utf8'), dbhash):
-        print("SUCCESS")
         return True
     else:
-        print("FAIL")
         return False
 
 def database_newuser(username,password):
-    salt = bcrypt.gensalt()
-    hash = bcrypt.hashpw(password.encode('utf8'), salt)
-    userinput = {'username': username, 'password': hash}
-    records.insert_one(userinput)
-    text = ("User " + username + " created.")
-    logger.log("system",userinput,"1")
-    logger.log("user",text,"1")
+    hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
+    records.insert_one({'username': username, 'password': hash})
+    logger.log("user",("User " + username + " created."),"1")
     return True
 
 if __name__ == "__main__":
