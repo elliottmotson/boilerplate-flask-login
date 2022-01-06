@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from flask import request
 
 class bcolors:
     low = "\033[39m"
@@ -27,17 +28,20 @@ class bcolors:
 #   logger.log("user",text,"3")
 
 def log(logfile,text,priority):
-    text = str(text)
-    now = datetime.now()
-    nowtime = str(now.strftime("%d/%m/%Y %H:%M:%S"))
     if validate(logfile, priority) and filesetup(logfile):
         dir = ("./logs/"+logfile+".log")
+        text = str(text)
+        now = datetime.now()
+        nowtime = str(now.strftime("%d/%m/%Y %H:%M:%S"))
+        if (logfile == 'user'):
+            remote = request.environ['REMOTE_ADDR']
+            text = (text + " @ IP - " + remote)
         with open(dir, "a") as file:
             writetext = (nowtime + " - PRIORITY: " + priority + " - LOG - " + text + "\n")
             file.write(writetext)
             file.close()
             print(writetext)
-            
+
 def validate(logfile, priority):
     logfiles = ['system', 'user', 'misc']
     prioritynum = ['1', '2', '3']
