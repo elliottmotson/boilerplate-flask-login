@@ -15,6 +15,8 @@ import pymongo
 from dotenv import load_dotenv
 import logger
 import time
+from bson import json_util
+import json
 
 app = Flask(__name__)
 load_dotenv(verbose=True)
@@ -40,7 +42,8 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if database_validate(username,password):
+        if database_validate(username,password): #Login form validation
+            logger.log("user",(username+" logged in"),"1")
             return redirect(url_for('index'))
     return render_template("/login.html")
 
@@ -50,15 +53,30 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_newuser(username,password):
+            print("LOGGED IN")
             return redirect(url_for('index'))
+        else:
+            invalidlogin = True
+            return render_template("/register.html",invalidlogin=invalidlogin)
     return render_template("/register.html")
 
 @app.route("/<userid>/account", methods=["GET", "POST"])
 def account(userid):
     return render_template("/account.html", userid=userid)
 
-def database_validate(username,password):
+def database_validate(username,password):##############################BROKEN
+
+    #dbhash = user["password"]
+    #userinput = ({"username": username})
+    #user = records.find_one(userinput)
+    #userlist = list(user)
+    #userdata = json.dumps(userlist["password"])
+    #print(userdata[2])
     return True
+    #if bcrypt.hashpw(password, dbhash) == dbhash:
+    #    return True
+    #else:
+    #    return False
 
 def database_newuser(username,password):
     hash = bcrypt.hashpw(password.encode(encoding='UTF-8'), bcrypt.gensalt())
@@ -67,7 +85,6 @@ def database_newuser(username,password):
     text = ("User " + username + " created.")
     logger.log("system",userinput,"1")
     logger.log("user",text,"1")
-    user_true = True
     return True
 
 if __name__ == "__main__":
