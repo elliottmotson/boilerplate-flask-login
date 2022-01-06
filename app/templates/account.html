@@ -2,9 +2,10 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>{{session["username"]}}'s profile</title>
   </head>
   <body>
-    
+    <h1>{{session["username"]}}'s profile</h1><br>
+        <a href="{{ url_for('index') }}">Back</a>
   </body>
 </html>

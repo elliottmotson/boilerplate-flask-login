@@ -36,9 +36,9 @@ records = db.users
 @app.route("/", methods=["GET", "POST"])
 def index():
     if 'username' in session:
-        sessionuser = session["username"]
+        session["userid"] = get_userid(session['username'])
         loggedin = True
-        return render_template("/index.html",sessionuser=sessionuser,loggedin=loggedin)
+        return render_template("/index.html",loggedin=loggedin,session=session)
     else:
         loggedin = False
         return render_template("/index.html")
@@ -48,7 +48,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if database_validate(username,password): #Login form validation
+        if database_validate(username,password):
             session['username'] = username
             logger.log("user",(username+" logged in"),"1")
             return redirect(url_for('index'))
@@ -75,9 +75,18 @@ def logout():
    session.pop('username', None)
    return redirect(url_for('index'))
 
-@app.route("/<userid>/account", methods=["GET", "POST"])
+@app.route("/<string:userid>/account", methods=["GET", "POST"])
 def account(userid):
-    return render_template("/account.html", userid=userid)
+    return render_template("/account.html",session=session)
+
+def get_userid(username):
+    if records.find_one({"username": username}):
+        user = records.find_one({"username": username})
+        userid = str(user["_id"])
+        print(userid)
+        return userid
+    else:
+        return False
 
 def database_validate(username,password):
     if records.find_one({"username": username}):
