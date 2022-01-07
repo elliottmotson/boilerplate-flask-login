@@ -13,6 +13,9 @@
         <input name="login" type="submit" value="Submit"><br><br>
       </form>
     </div>
+    {% if invalid == true %}
+        <p>Account details incorrect</p>
+    {% endif %}
     <a href="{{ url_for('index') }}">Back</a>
   </body>
 </html>
