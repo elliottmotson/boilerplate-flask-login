@@ -54,15 +54,18 @@ def validate(logfile, priority):
 def filesetup(logfile):
     dir = ("./logs/"+logfile+".log")
     exists = os.path.exists(dir)
-    if exists:
+    if os.path.exists(dir):
         return True
-    elif not exists:
-        os.mkdir("./logs/")
-        with open(dir, "w") as file:
-            now = datetime.now()
-            nowtime = str(now.strftime("%d/%m/%Y %H:%M:%S"))
-            writetext = ("Created logfile at " + nowtime + "\n")
-            file.write(writetext)
-            file.close()
-            print("Created logfile " + logfile + " at " + nowtime)
-            return True
+    else:
+        try:
+            os.mkdir("./logs")
+            pass
+        finally:
+            with open(dir, "w") as file:
+                now = datetime.now()
+                nowtime = str(now.strftime("%d/%m/%Y %H:%M:%S"))
+                writetext = ("Created logfile at " + nowtime + "\n")
+                file.write(writetext)
+                file.close()
+                print("Created logfile " + logfile + " at " + nowtime)
+                return True
