@@ -57,6 +57,7 @@ def filesetup(logfile):
     if exists:
         return True
     elif not exists:
+        os.mkdir("./logs/")
         with open(dir, "w") as file:
             now = datetime.now()
             nowtime = str(now.strftime("%d/%m/%Y %H:%M:%S"))
