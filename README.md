@@ -1,5 +1,5 @@
-# flask-login
-Flask-login is a boilerplate account system programmed in Flask and Jinja with MongoDB integration.
+# Boilerplate-flask-login
+Boilerplate-flask-login is a boilerplate account system programmed in Flask and Jinja with MongoDB integration.
 
 
 # SETUP
