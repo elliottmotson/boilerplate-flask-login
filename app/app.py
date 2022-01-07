@@ -33,6 +33,32 @@ client = pymongo.MongoClient("mongodb+srv://" + db_user + ":" + db_pwd + "@" + d
 db = client.get_database(db_database)
 records = db.users
 
+def loggedin(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "logged-in" not in session:
+            return redirect(url_for("login")
+            if isadmin():
+
+        return f(*args, **kwargs)
+    return decorated_function
+
+def isadmin(username):
+    if records.find_one({"username": username}):
+        user = records.find_one({"username": username})
+        adminbool = str(user["admin"])
+        if adminkey is not None:
+
+            return userid
+    else:
+        return False
+
+#Boolean - 1 byte
+#var foo = { a: true}
+#Object.bsonsize(foo)
+
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if 'username' in session:
@@ -42,6 +68,7 @@ def index():
     else:
         loggedin = False
         return render_template("/index.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -62,6 +89,7 @@ def login():
                 return render_template("/login.html",invalid=invalid)
     return render_template("/login.html")
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == 'POST':
@@ -76,6 +104,8 @@ def register():
             return render_template("/register.html",invalidreg=invalidreg)
     return render_template("/register.html")
 
+
+@loggedin
 @app.route('/logout')
 def logout():
     logger.log("user",("User " + session["username"] + " logged out"),"1")
@@ -88,6 +118,7 @@ def account(userid):
     logger.log("user",("User " + session["username"] + " visited their profile"),"1")
     return render_template("/account.html",session=session)
 
+
 def get_userid(username):
     if records.find_one({"username": username}):
         user = records.find_one({"username": username})
@@ -96,6 +127,7 @@ def get_userid(username):
         return userid
     else:
         return False
+
 
 def database_validate(username,password):
     if records.find_one({"username": username}):
@@ -107,6 +139,8 @@ def database_validate(username,password):
             return False
     else:
         return False
+
+
 def database_newuser(username,password):
     hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
     if records.find_one({"username": username}):
