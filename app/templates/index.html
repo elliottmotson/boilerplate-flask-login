@@ -7,7 +7,9 @@
   <body>
     {% if loggedin == true %}
     <h1>Welcome {{session['username']}}!</h1>
-    <a href={{ url_for('logout') }}>Logout</a>
+    <a href={{ url_for('account', userid = session["userid"]) }}>Account</a><br>
+    <br>
+    <a href={{ url_for('logout') }}>Log out</a>
     {% else %}
         <h1>Welcome!</h1>
         <a href={{ url_for('register') }}>Register</a>
