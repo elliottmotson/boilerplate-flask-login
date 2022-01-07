@@ -36,8 +36,8 @@ records = db.users
 @app.route("/", methods=["GET", "POST"])
 def index():
     if 'username' in session:
-        session["userid"] = get_userid(session['username'])
         loggedin = True
+        logger.log("user",("User " + session["username"] + " visited index.html"),"1")
         return render_template("/index.html",loggedin=loggedin,session=session)
     else:
         loggedin = False
@@ -45,17 +45,21 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        if database_validate(username,password):
-            session['username'] = username
-            logger.log("user",(username+" logged in"),"1")
-            return redirect(url_for('index'))
-        else:
-            logger.log("user",("Invalid login to account with username " + username),"1")
-            invalid = True
-            return render_template("/login.html",invalid=invalid)
+    if 'username' in session:
+        logger.log("user",("User " + session["username"] + " visited login.html"),"1")
+        return redirect(url_for('index'))
+    elif request.method == 'POST':
+            username = request.form.get('username')
+            password = request.form.get('password')
+            if database_validate(username,password):
+                session['username'] = username
+                session["userid"] = get_userid(session['username'])
+                logger.log("user",(username+" logged in"),"1")
+                return redirect(url_for('index'))
+            else:
+                logger.log("user",("Invalid login to account with username " + username),"1")
+                invalid = True
+                return render_template("/login.html",invalid=invalid)
     return render_template("/login.html")
 
 @app.route("/register", methods=["GET", "POST"])
@@ -64,19 +68,24 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         if database_newuser(username,password):
+            logger.log("user",("User " + username + " created."),"1")
             return redirect(url_for('index'))
         else:
             invalidreg = True
+            logger.log("user",("Attempted register with taken username: " + username),"1")
             return render_template("/register.html",invalidreg=invalidreg)
     return render_template("/register.html")
 
 @app.route('/logout')
 def logout():
-   session.pop('username', None)
-   return redirect(url_for('index'))
+    logger.log("user",("User " + session["username"] + " logged out"),"1")
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
 
 @app.route("/<string:userid>/account", methods=["GET", "POST"])
 def account(userid):
+    logger.log("user",("User " + session["username"] + " visited their profile"),"1")
     return render_template("/account.html",session=session)
 
 def get_userid(username):
@@ -101,12 +110,16 @@ def database_validate(username,password):
 def database_newuser(username,password):
     hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
     if records.find_one({"username": username}):
-        logger.log("user",("Attempted register with taken username: " + username),"1")
         return False
     else:
         records.insert_one({'username': username, 'password': hash})
-        logger.log("user",("User " + username + " created."),"1")
         return True
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
