@@ -39,7 +39,7 @@ def loggedin(f):
         if "logged-in" not in session:
             return redirect(url_for("login")
             if isadmin():
-
+                return True#############????????
         return f(*args, **kwargs)
     return decorated_function
 
@@ -47,9 +47,10 @@ def isadmin(username):
     if records.find_one({"username": username}):
         user = records.find_one({"username": username})
         adminbool = str(user["admin"])
-        if adminkey is not None:
-
-            return userid
+        if adminbool == "1":
+            return True
+        else:
+            return False
     else:
         return False
 
@@ -146,7 +147,7 @@ def database_newuser(username,password):
     if records.find_one({"username": username}):
         return False
     else:
-        records.insert_one({'username': username, 'password': hash})
+        records.insert_one({'username': username, 'password': hash, 'admin': '0'})
         return True
 
 
